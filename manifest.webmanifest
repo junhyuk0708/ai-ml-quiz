@@ -1,0 +1,25 @@
+{
+  "name": "AI & 머신러닝 기초 4지선다",
+  "short_name": "AI·ML 퀴즈",
+  "description": "AI와 머신러닝 기초를 복습하는 모바일 4지선다 125문제 퀴즈",
+  "lang": "ko-KR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#0b57d0",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
