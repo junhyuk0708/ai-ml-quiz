@@ -1,0 +1,1351 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b57d0" />
+  <meta name="description" content="교재별 AI·머신러닝 면접·시험 4지선다 퀴즈 라이브러리" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icon-192.png" />
+  <title>AI·ML 퀴즈 라이브러리</title>
+  <style>
+    :root {
+      --bg: #f3f6fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #687386;
+      --line: #dce3ef;
+      --primary: #0b57d0;
+      --primary-2: #224f9c;
+      --primary-soft: #e8f0fe;
+      --correct: #137333;
+      --correct-soft: #e6f4ea;
+      --wrong: #b3261e;
+      --wrong-soft: #fce8e6;
+      --warning: #925b00;
+      --warning-soft: #fff4d6;
+      --shadow: 0 14px 38px rgba(24, 39, 75, .10);
+      --radius: 22px;
+    }
+    html[data-theme="dark"] {
+      --bg: #0e141d;
+      --card: #171f2b;
+      --text: #f3f6fb;
+      --muted: #a8b2c1;
+      --line: #2c3747;
+      --primary: #8ab4f8;
+      --primary-2: #aecbfa;
+      --primary-soft: #1d3557;
+      --correct: #81c995;
+      --correct-soft: #193c27;
+      --wrong: #f28b82;
+      --wrong-soft: #4a2224;
+      --warning: #fdd663;
+      --warning-soft: #493a12;
+      --shadow: 0 18px 45px rgba(0, 0, 0, .34);
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% -10%, rgba(11,87,208,.10), transparent 32%),
+        var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", Arial, sans-serif;
+      line-height: 1.55;
+      overscroll-behavior-y: contain;
+    }
+    button, select, a { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, a:focus-visible, select:focus-visible {
+      outline: 3px solid rgba(11,87,208,.32);
+      outline-offset: 2px;
+    }
+    a { color: inherit; }
+    .app {
+      width: min(820px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: max(12px, env(safe-area-inset-top)) 14px calc(96px + env(safe-area-inset-bottom));
+    }
+    .topbar {
+      display: grid;
+      grid-template-columns: 46px 1fr 46px;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .icon-btn {
+      width: 46px;
+      height: 46px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(24,39,75,.05);
+    }
+    .icon-btn[hidden] { visibility: hidden; display: block; }
+    .title-wrap { min-width: 0; text-align: center; }
+    .app-title {
+      margin: 0;
+      font-size: 1.04rem;
+      font-weight: 850;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: -.02em;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: .76rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #fff;
+      border-radius: 26px;
+      padding: 24px 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+    html[data-theme="dark"] .hero { color: #07111f; }
+    .hero h1 {
+      font-size: clamp(1.55rem, 7vw, 2.2rem);
+      line-height: 1.2;
+      margin: 0 0 9px;
+      letter-spacing: -.04em;
+    }
+    .hero p { margin: 0; opacity: .90; font-size: .94rem; }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .hero-stat {
+      padding: 10px 8px;
+      border-radius: 15px;
+      text-align: center;
+      background: rgba(255,255,255,.15);
+      backdrop-filter: blur(4px);
+    }
+    .hero-stat strong { display: block; font-size: 1.2rem; }
+    .hero-stat span { display: block; font-size: .7rem; opacity: .85; }
+
+    .resume-card {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: var(--warning-soft);
+      border: 1px solid color-mix(in srgb, var(--warning) 35%, transparent);
+      border-radius: 18px;
+      padding: 13px 14px;
+      margin-bottom: 14px;
+    }
+    .resume-card.show { display: flex; }
+    .resume-card .resume-copy { min-width: 0; flex: 1; }
+    .resume-card strong { display: block; font-size: .92rem; }
+    .resume-card span { display: block; color: var(--muted); font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .section-title {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 20px 2px 10px;
+    }
+    .section-title h2 { margin: 0; font-size: 1.18rem; letter-spacing: -.025em; }
+    .section-title small { color: var(--muted); }
+
+    .book-grid { display: grid; gap: 13px; }
+    .book-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .book-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+    .book-index {
+      flex: 0 0 auto;
+      min-width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      color: var(--primary);
+      background: var(--primary-soft);
+      font-weight: 900;
+    }
+    .book-main { flex: 1; min-width: 0; }
+    .book-title { margin: 0; font-size: 1.08rem; line-height: 1.35; letter-spacing: -.02em; }
+    .book-desc { margin: 6px 0 0; color: var(--muted); font-size: .82rem; }
+    .book-badge {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: var(--bg);
+      color: var(--muted);
+      padding: 5px 8px;
+      font-size: .68rem;
+      font-weight: 800;
+    }
+    .book-progress {
+      height: 8px;
+      background: var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 15px 0 9px;
+    }
+    .book-progress > span { display: block; height: 100%; background: var(--primary); width: 0; }
+    .book-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .mini-stat {
+      border-radius: 12px;
+      background: var(--bg);
+      text-align: center;
+      padding: 8px 4px;
+    }
+    .mini-stat strong { display: block; font-size: .95rem; }
+    .mini-stat span { color: var(--muted); font-size: .66rem; }
+    .actions { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 8px; }
+    .btn {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 9px 12px;
+      background: var(--card);
+      color: var(--text);
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: grid;
+      place-items: center;
+    }
+    .btn.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    html[data-theme="dark"] .btn.primary { color: #07111f; }
+    .btn.soft { background: var(--primary-soft); color: var(--primary); border-color: transparent; }
+    .btn.danger { color: var(--wrong); }
+    .btn:disabled { opacity: .42; cursor: default; }
+    .btn.small { min-height: 38px; font-size: .8rem; padding: 7px 10px; }
+
+    .integrated-card {
+      border: 1px dashed color-mix(in srgb, var(--primary) 55%, var(--line));
+      background: linear-gradient(135deg, var(--card), var(--primary-soft));
+    }
+
+    .footer-tools {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 22px 0 0;
+      flex-wrap: wrap;
+    }
+
+    /* Quiz */
+    #quizView { display: none; }
+    #quizView.show { display: block; }
+    #homeView.hidden { display: none; }
+    .progress-shell {
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--line);
+      margin-bottom: 12px;
+    }
+    .progress-bar { height: 100%; width: 0; background: var(--primary); transition: width .22s ease; }
+    .quiz-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      touch-action: pan-y;
+      animation: fadeIn .18s ease;
+    }
+    @keyframes fadeIn { from { opacity: .35; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    .meta-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 13px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: .72rem;
+      font-weight: 800;
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+    .chip.neutral { background: var(--bg); color: var(--muted); }
+    .counter { font-size: .8rem; color: var(--muted); white-space: nowrap; padding-top: 4px; }
+    .question {
+      margin: 4px 0 19px;
+      font-size: clamp(1.15rem, 4.8vw, 1.5rem);
+      line-height: 1.48;
+      font-weight: 850;
+      letter-spacing: -.025em;
+      white-space: pre-line;
+    }
+    .options { display: grid; gap: 10px; }
+    .option {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      align-items: start;
+      gap: 10px;
+      text-align: left;
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      padding: 13px;
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color .15s ease, background .15s ease, transform .08s ease;
+    }
+    .option:active { transform: scale(.992); }
+    .option:hover { border-color: var(--primary); }
+    .option .num {
+      width: 30px; height: 30px; display: grid; place-items: center;
+      border-radius: 50%; background: var(--bg); color: var(--muted); font-weight: 850;
+    }
+    .option.correct { border-color: var(--correct); background: var(--correct-soft); }
+    .option.correct .num { background: var(--correct); color: #fff; }
+    .option.wrong { border-color: var(--wrong); background: var(--wrong-soft); }
+    .option.wrong .num { background: var(--wrong); color: #fff; }
+    .option.dim { opacity: .62; }
+    .explanation {
+      margin-top: 16px;
+      border: 1px solid color-mix(in srgb, var(--primary) 32%, transparent);
+      border-radius: 17px;
+      padding: 15px;
+      background: var(--primary-soft);
+      display: none;
+    }
+    .explanation.show { display: block; animation: fadeIn .18s ease; }
+    .result-label { font-size: .8rem; font-weight: 900; margin-bottom: 6px; color: var(--primary); }
+    .result-label.ok { color: var(--correct); }
+    .result-label.no { color: var(--wrong); }
+    .explanation h3 { font-size: .93rem; margin: 16px 0 8px; }
+    .explanation p { margin: 0; }
+    .key-box {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 10px 11px;
+      border-radius: 13px;
+      background: color-mix(in srgb, var(--card) 58%, transparent);
+      font-size: .78rem;
+    }
+    .option-review-list { display: grid; gap: 7px; }
+    .option-review {
+      border-radius: 13px;
+      padding: 10px 11px;
+      background: color-mix(in srgb, var(--card) 62%, transparent);
+      border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+    }
+    .option-review.correct { border-color: var(--correct); }
+    .option-review.wrong-selected { border-color: var(--wrong); }
+    .option-review strong { display: block; font-size: .82rem; margin-bottom: 3px; }
+    .option-review span { color: var(--muted); font-size: .78rem; }
+    .swipe-hint { margin-top: auto; padding-top: 18px; text-align: center; color: var(--muted); font-size: .74rem; }
+    .bottom-nav {
+      position: fixed;
+      z-index: 30;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: min(820px, 100%);
+      display: none;
+      grid-template-columns: 1fr 1.35fr 1fr;
+      gap: 8px;
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+      background: linear-gradient(to top, var(--bg) 80%, transparent);
+    }
+    .bottom-nav.show { display: grid; }
+
+    /* Modal */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      place-items: center;
+      padding: 17px;
+      background: rgba(5, 11, 20, .60);
+      backdrop-filter: blur(8px);
+    }
+    .overlay.show { display: grid; }
+    .panel {
+      width: min(650px, 100%);
+      max-height: min(88vh, 880px);
+      overflow: auto;
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 21px;
+    }
+    .panel-head { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+    .panel h2 { margin: 0; font-size: 1.32rem; letter-spacing: -.03em; }
+    .panel .lead { color: var(--muted); margin: 5px 0 16px; font-size: .84rem; }
+    .close-btn {
+      width: 40px; height: 40px; border-radius: 13px; border: 1px solid var(--line);
+      background: var(--card); color: var(--text); cursor: pointer;
+    }
+    .field { margin: 13px 0; }
+    .field label { display: block; font-size: .79rem; font-weight: 850; margin-bottom: 6px; }
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 11px 12px;
+      color: var(--text);
+      background: var(--card);
+    }
+    .selected-count { color: var(--muted); font-size: .78rem; margin: 8px 0 0; }
+    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
+    .mode-grid .btn { min-height: 50px; }
+    .panel-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 15px 0; }
+    .stat {
+      background: var(--bg); border-radius: 14px; padding: 11px 7px; text-align: center;
+    }
+    .stat strong { display: block; font-size: 1.18rem; }
+    .stat span { color: var(--muted); font-size: .68rem; }
+    .score-ring {
+      --angle: 0deg;
+      width: 132px; height: 132px; border-radius: 50%;
+      display: grid; place-items: center; margin: 10px auto 16px;
+      background: conic-gradient(var(--primary) var(--angle), var(--line) 0);
+      position: relative;
+    }
+    .score-ring::before {
+      content: ""; position: absolute; inset: 12px; border-radius: 50%; background: var(--card);
+    }
+    .score-ring strong { z-index: 1; font-size: 1.55rem; }
+    .score-ring small { display: block; color: var(--muted); font-size: .68rem; }
+    .category-result { display: grid; gap: 6px; }
+    .category-row {
+      display: flex; justify-content: space-between; gap: 10px;
+      padding: 9px 10px; border-radius: 12px; background: var(--bg); font-size: .8rem;
+    }
+    .loading[hidden] { display: none !important; }
+    .loading {
+      min-height: 60vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+    }
+    .toast {
+      position: fixed;
+      left: 50%; bottom: calc(88px + env(safe-area-inset-bottom));
+      transform: translate(-50%, 20px);
+      z-index: 120;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #1f2937;
+      color: #fff;
+      font-size: .8rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: .18s ease;
+      max-width: calc(100vw - 30px);
+      text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 520px) {
+      .book-stats { grid-template-columns: repeat(2, 1fr); }
+      .actions { grid-template-columns: 1fr 1fr; }
+      .actions .primary { grid-column: 1 / -1; }
+      .quiz-card { min-height: 570px; padding: 17px; }
+      .mode-grid { grid-template-columns: 1fr; }
+      .hero { padding: 21px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <button id="homeBtn" class="icon-btn" type="button" aria-label="교재 목록으로" hidden>⌂</button>
+      <div class="title-wrap">
+        <h1 id="appTitle" class="app-title">AI·ML 퀴즈 라이브러리</h1>
+        <div id="appSubtitle" class="subtitle">교재별 면접·시험 대비</div>
+      </div>
+      <button id="themeBtn" class="icon-btn" type="button" aria-label="화면 테마 변경">◐</button>
+    </header>
+
+    <section id="loadingView" class="loading">
+      <div>
+        <strong>퀴즈 데이터를 불러오는 중입니다.</strong>
+        <div style="margin-top:7px">첫 로딩 뒤에는 오프라인에서도 사용할 수 있습니다.</div>
+      </div>
+    </section>
+
+    <section id="homeView" hidden>
+      <div class="hero">
+        <h1>AI·ML 면접·시험<br>퀴즈 라이브러리</h1>
+        <p>교재별 학습, 통합 랜덤, 오답 복습과 상세 선택지 해설을 한 곳에서 진행합니다.</p>
+        <div class="hero-stats">
+          <div class="hero-stat"><strong id="heroBooks">0</strong><span>등록 교재</span></div>
+          <div class="hero-stat"><strong id="heroQuestions">0</strong><span>전체 문제</span></div>
+          <div class="hero-stat"><strong id="heroWrong">0</strong><span>남은 오답</span></div>
+        </div>
+      </div>
+
+      <div id="resumeCard" class="resume-card">
+        <div class="resume-copy">
+          <strong>진행 중인 학습이 있습니다.</strong>
+          <span id="resumeText"></span>
+        </div>
+        <button id="resumeBtn" class="btn small primary" type="button">이어하기</button>
+      </div>
+
+      <div class="section-title">
+        <h2>교재별 학습</h2>
+        <small id="librarySummary"></small>
+      </div>
+      <div id="bookGrid" class="book-grid"></div>
+
+      <div class="section-title">
+        <h2>전체 교재 통합</h2>
+        <small>교재를 섞어서 복습</small>
+      </div>
+      <article id="integratedCard" class="book-card integrated-card"></article>
+
+      <div class="footer-tools">
+        <button id="resetAllBtn" class="btn small danger" type="button">전체 진도 초기화</button>
+        <button id="installHelpBtn" class="btn small" type="button">홈 화면 사용법</button>
+      </div>
+    </section>
+
+    <section id="quizView">
+      <div class="progress-shell"><div id="progressBar" class="progress-bar"></div></div>
+      <article id="quizCard" class="quiz-card">
+        <div class="meta-row">
+          <div class="chips">
+            <span id="bookChip" class="chip"></span>
+            <span id="categoryChip" class="chip"></span>
+            <span id="unitChip" class="chip neutral"></span>
+            <span id="difficultyChip" class="chip neutral"></span>
+            <span id="pageChip" class="chip neutral"></span>
+          </div>
+          <span id="counter" class="counter"></span>
+        </div>
+        <div id="questionText" class="question"></div>
+        <div id="options" class="options"></div>
+        <div id="explanation" class="explanation"></div>
+        <div class="swipe-hint">← 오른쪽 스와이프: 이전 · 왼쪽 스와이프: 다음 →</div>
+      </article>
+    </section>
+  </main>
+
+  <nav id="bottomNav" class="bottom-nav">
+    <button id="prevBtn" class="btn" type="button">이전</button>
+    <button id="revealBtn" class="btn soft" type="button">정답 보기</button>
+    <button id="nextBtn" class="btn primary" type="button">다음</button>
+  </nav>
+
+  <div id="setupOverlay" class="overlay" role="dialog" aria-modal="true">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2 id="setupTitle">학습 설정</h2>
+          <p id="setupLead" class="lead"></p>
+        </div>
+        <button id="closeSetupBtn" class="close-btn" type="button" aria-label="닫기">✕</button>
+      </div>
+      <div class="field">
+        <label for="categorySelect">단원</label>
+        <select id="categorySelect"></select>
+      </div>
+      <div class="field">
+        <label for="difficultySelect">난이도</label>
+        <select id="difficultySelect">
+          <option value="">전체 난이도</option>
+          <option value="기본">기본</option>
+          <option value="중급">중급</option>
+          <option value="심화">심화</option>
+        </select>
+      </div>
+      <div id="selectedCount" class="selected-count"></div>
+      <div class="mode-grid">
+        <button class="btn primary" type="button" data-mode="sequence">순서대로</button>
+        <button class="btn" type="button" data-mode="shuffle">전체 랜덤</button>
+        <button class="btn" type="button" data-mode="random20">랜덤 20문제</button>
+        <button class="btn" type="button" data-mode="random50">랜덤 50문제</button>
+        <button class="btn soft" type="button" data-mode="wrong">저장된 오답 복습</button>
+      </div>
+      <div class="panel-actions">
+        <button id="resetBookBtn" class="btn small danger" type="button">이 교재 진도 초기화</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="resultOverlay" class="overlay" role="dialog" aria-modal="true">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>학습 결과</h2>
+          <p id="resultMode" class="lead"></p>
+        </div>
+        <button id="closeResultBtn" class="close-btn" type="button" aria-label="닫기">✕</button>
+      </div>
+      <div id="scoreRing" class="score-ring">
+        <strong id="scoreText">0%<small>정답률</small></strong>
+      </div>
+      <div class="stat-grid">
+        <div class="stat"><strong id="resultCorrect">0</strong><span>정답</span></div>
+        <div class="stat"><strong id="resultWrong">0</strong><span>오답·공개</span></div>
+        <div class="stat"><strong id="resultSkipped">0</strong><span>미풀이</span></div>
+      </div>
+      <div id="resultCategories" class="category-result"></div>
+      <div class="mode-grid">
+        <button id="reviewSessionWrongBtn" class="btn soft" type="button">이번 오답 다시 풀기</button>
+        <button id="restartSessionBtn" class="btn" type="button">같은 세트 다시 풀기</button>
+        <button id="resultHomeBtn" class="btn primary" type="button">교재 목록</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="helpOverlay" class="overlay" role="dialog" aria-modal="true">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>휴대폰에서 앱처럼 사용하기</h2>
+          <p class="lead">GitHub Pages 주소를 홈 화면에 추가하면 바로 실행할 수 있습니다.</p>
+        </div>
+        <button id="closeHelpBtn" class="close-btn" type="button" aria-label="닫기">✕</button>
+      </div>
+      <div class="category-result">
+        <div class="category-row"><span>Android Chrome</span><strong>⋮ → 앱 설치/홈 화면에 추가</strong></div>
+        <div class="category-row"><span>iPhone Safari</span><strong>공유 → 홈 화면에 추가</strong></div>
+        <div class="category-row"><span>진도 저장</span><strong>현재 브라우저의 로컬 저장소</strong></div>
+        <div class="category-row"><span>오프라인</span><strong>첫 접속 후 캐시 지원</strong></div>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    "use strict";
+
+    const APP_VERSION = "aiml-quiz-library-v2";
+    const PROGRESS_KEY = APP_VERSION + "-progress";
+    const SESSION_KEY = APP_VERSION + "-session";
+    const PREF_KEY = APP_VERSION + "-prefs";
+    const MIGRATION_KEY = APP_VERSION + "-migration-done";
+
+    const $ = (s, root = document) => root.querySelector(s);
+    const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+
+    const els = {
+      loadingView: $("#loadingView"),
+      homeView: $("#homeView"),
+      quizView: $("#quizView"),
+      homeBtn: $("#homeBtn"),
+      themeBtn: $("#themeBtn"),
+      appTitle: $("#appTitle"),
+      appSubtitle: $("#appSubtitle"),
+      bookGrid: $("#bookGrid"),
+      integratedCard: $("#integratedCard"),
+      heroBooks: $("#heroBooks"),
+      heroQuestions: $("#heroQuestions"),
+      heroWrong: $("#heroWrong"),
+      librarySummary: $("#librarySummary"),
+      resumeCard: $("#resumeCard"),
+      resumeText: $("#resumeText"),
+      resumeBtn: $("#resumeBtn"),
+      quizCard: $("#quizCard"),
+      progressBar: $("#progressBar"),
+      bookChip: $("#bookChip"),
+      categoryChip: $("#categoryChip"),
+      unitChip: $("#unitChip"),
+      difficultyChip: $("#difficultyChip"),
+      pageChip: $("#pageChip"),
+      counter: $("#counter"),
+      questionText: $("#questionText"),
+      options: $("#options"),
+      explanation: $("#explanation"),
+      bottomNav: $("#bottomNav"),
+      prevBtn: $("#prevBtn"),
+      revealBtn: $("#revealBtn"),
+      nextBtn: $("#nextBtn"),
+      setupOverlay: $("#setupOverlay"),
+      setupTitle: $("#setupTitle"),
+      setupLead: $("#setupLead"),
+      categorySelect: $("#categorySelect"),
+      difficultySelect: $("#difficultySelect"),
+      selectedCount: $("#selectedCount"),
+      resetBookBtn: $("#resetBookBtn"),
+      resultOverlay: $("#resultOverlay"),
+      resultMode: $("#resultMode"),
+      scoreRing: $("#scoreRing"),
+      scoreText: $("#scoreText"),
+      resultCorrect: $("#resultCorrect"),
+      resultWrong: $("#resultWrong"),
+      resultSkipped: $("#resultSkipped"),
+      resultCategories: $("#resultCategories"),
+      reviewSessionWrongBtn: $("#reviewSessionWrongBtn"),
+      helpOverlay: $("#helpOverlay"),
+      toast: $("#toast")
+    };
+
+    let books = [];
+    let questions = [];
+    let questionMap = new Map();
+    let bookMap = new Map();
+    let progress = loadJSON(PROGRESS_KEY, { items: {}, wrongIds: [] });
+    let session = loadJSON(SESSION_KEY, null);
+    let setupBookId = null;
+    let touchStart = null;
+
+    function loadJSON(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+    function saveJSON(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+    }
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, ch => ({
+        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+      }[ch]));
+    }
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+    function openOverlay(el) { el.classList.add("show"); }
+    function closeOverlay(el) { el.classList.remove("show"); }
+    function toast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => els.toast.classList.remove("show"), 1650);
+    }
+    function saveProgress() {
+      progress.wrongIds = [...new Set(progress.wrongIds || [])];
+      saveJSON(PROGRESS_KEY, progress);
+    }
+    function saveSession() { saveJSON(SESSION_KEY, session); }
+
+    async function loadData() {
+      if (window.__QUIZ_EMBEDDED__) {
+        books = window.__QUIZ_EMBEDDED__.books;
+        questions = window.__QUIZ_EMBEDDED__.questions;
+      } else {
+        const bookResponse = await fetch("./data/books.json");
+        if (!bookResponse.ok) throw new Error("books.json을 불러오지 못했습니다.");
+        books = await bookResponse.json();
+        const questionLists = await Promise.all(books.map(async book => {
+          const response = await fetch(book.questionFile);
+          if (!response.ok) throw new Error(book.title + " 문제 파일을 불러오지 못했습니다.");
+          return response.json();
+        }));
+        questions = questionLists.flat();
+      }
+      bookMap = new Map(books.map(b => [b.id, b]));
+      questionMap = new Map(questions.map(q => [q.id, q]));
+      migrateOldProgress();
+      normalizeSession();
+    }
+
+    function migrateOldProgress() {
+      if (localStorage.getItem(MIGRATION_KEY)) return;
+      try {
+        const oldWrong = JSON.parse(localStorage.getItem("ai-ml-basic-quiz-125-v1-wrong-bank") || "[]");
+        oldWrong.forEach(id => {
+          const qid = "b1-q" + String(Number(id)).padStart(3, "0");
+          if (questionMap.has(qid) && !progress.wrongIds.includes(qid)) progress.wrongIds.push(qid);
+        });
+        const oldState = JSON.parse(localStorage.getItem("ai-ml-basic-quiz-125-v1-state") || "null");
+        if (oldState?.answers) {
+          Object.entries(oldState.answers).forEach(([id, answer]) => {
+            const qid = "b1-q" + String(Number(id)).padStart(3, "0");
+            if (!questionMap.has(qid)) return;
+            const item = progress.items[qid] || { attempts: 0, correct: 0, wrong: 0, lastAt: 0 };
+            item.attempts += 1;
+            if (answer.correct) item.correct += 1;
+            else item.wrong += 1;
+            item.lastAt = Date.now();
+            progress.items[qid] = item;
+          });
+        }
+        saveProgress();
+      } catch {}
+      localStorage.setItem(MIGRATION_KEY, "1");
+    }
+
+    function normalizeSession() {
+      if (!session || !Array.isArray(session.order)) {
+        session = null;
+        return;
+      }
+      session.order = session.order.filter(id => questionMap.has(id));
+      if (!session.order.length) session = null;
+      if (session && (!Number.isInteger(session.index) || session.index < 0)) session.index = 0;
+      if (session && session.index >= session.order.length) session.index = session.order.length - 1;
+    }
+
+    function itemFor(qid) {
+      return progress.items[qid] || { attempts: 0, correct: 0, wrong: 0, lastAt: 0 };
+    }
+    function questionsForBook(bookId) {
+      return bookId === "all" ? questions : questions.filter(q => q.bookId === bookId);
+    }
+    function statsForBook(bookId) {
+      const pool = questionsForBook(bookId);
+      let solved = 0, attempts = 0, correct = 0;
+      pool.forEach(q => {
+        const item = itemFor(q.id);
+        if (item.attempts > 0) solved += 1;
+        attempts += item.attempts || 0;
+        correct += item.correct || 0;
+      });
+      const ids = new Set(pool.map(q => q.id));
+      const wrong = (progress.wrongIds || []).filter(id => ids.has(id)).length;
+      return {
+        total: pool.length,
+        solved,
+        attempts,
+        correct,
+        wrong,
+        accuracy: attempts ? Math.round(correct / attempts * 100) : 0
+      };
+    }
+    function getBookName(bookId) {
+      return bookId === "all" ? "전체 교재 통합" : (bookMap.get(bookId)?.shortTitle || bookId);
+    }
+
+    function renderHome() {
+      els.loadingView.hidden = true;
+      els.homeView.hidden = false;
+      els.homeView.classList.remove("hidden");
+      els.quizView.classList.remove("show");
+      els.bottomNav.classList.remove("show");
+      els.homeBtn.hidden = true;
+      els.appTitle.textContent = "AI·ML 퀴즈 라이브러리";
+      els.appSubtitle.textContent = "교재별 면접·시험 대비";
+
+      const allStats = statsForBook("all");
+      els.heroBooks.textContent = books.length;
+      els.heroQuestions.textContent = allStats.total;
+      els.heroWrong.textContent = allStats.wrong;
+      els.librarySummary.textContent = `${allStats.solved}/${allStats.total}문제 학습`;
+
+      els.bookGrid.innerHTML = books.map((book, index) => {
+        const s = statsForBook(book.id);
+        const pct = s.total ? Math.round(s.solved / s.total * 100) : 0;
+        return `
+          <article class="book-card">
+            <div class="book-head">
+              <div class="book-index">${index + 1}</div>
+              <div class="book-main">
+                <h3 class="book-title">${escapeHtml(book.title)}</h3>
+                <p class="book-desc">${escapeHtml(book.description)}</p>
+              </div>
+              <span class="book-badge">${book.sourcePages}p</span>
+            </div>
+            <div class="book-progress"><span style="width:${pct}%"></span></div>
+            <div class="book-stats">
+              <div class="mini-stat"><strong>${s.total}</strong><span>전체 문제</span></div>
+              <div class="mini-stat"><strong>${s.solved}</strong><span>푼 문제</span></div>
+              <div class="mini-stat"><strong>${s.accuracy}%</strong><span>누적 정답률</span></div>
+              <div class="mini-stat"><strong>${s.wrong}</strong><span>남은 오답</span></div>
+            </div>
+            <div class="actions">
+              <button class="btn primary" type="button" data-setup-book="${book.id}">학습 설정</button>
+              <button class="btn soft" type="button" data-wrong-book="${book.id}" ${s.wrong ? "" : "disabled"}>오답 복습</button>
+            </div>
+          </article>`;
+      }).join("");
+
+      const s = allStats;
+      const pct = s.total ? Math.round(s.solved / s.total * 100) : 0;
+      els.integratedCard.innerHTML = `
+        <div class="book-head">
+          <div class="book-index">∞</div>
+          <div class="book-main">
+            <h3 class="book-title">전체 교재 통합 문제</h3>
+            <p class="book-desc">등록된 ${books.length}개 교재의 ${s.total}문제를 섞어서 학습합니다.</p>
+          </div>
+          <span class="book-badge">통합</span>
+        </div>
+        <div class="book-progress"><span style="width:${pct}%"></span></div>
+        <div class="book-stats">
+          <div class="mini-stat"><strong>${s.total}</strong><span>전체 문제</span></div>
+          <div class="mini-stat"><strong>${s.solved}</strong><span>푼 문제</span></div>
+          <div class="mini-stat"><strong>${s.accuracy}%</strong><span>누적 정답률</span></div>
+          <div class="mini-stat"><strong>${s.wrong}</strong><span>남은 오답</span></div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" type="button" data-setup-book="all">통합 학습 설정</button>
+          <button class="btn soft" type="button" data-wrong-book="all" ${s.wrong ? "" : "disabled"}>전체 오답</button>
+          <button class="btn" type="button" data-quick-random="all">랜덤 20</button>
+        </div>`;
+
+      $$("[data-setup-book]").forEach(btn => btn.addEventListener("click", () => openSetup(btn.dataset.setupBook)));
+      $$("[data-wrong-book]").forEach(btn => btn.addEventListener("click", () => {
+        openSetup(btn.dataset.wrongBook);
+        startMode("wrong");
+      }));
+      $$("[data-quick-random]").forEach(btn => btn.addEventListener("click", () => {
+        openSetup(btn.dataset.quickRandom);
+        startMode("random20");
+      }));
+
+      if (session?.order?.length && session.index < session.order.length) {
+        els.resumeCard.classList.add("show");
+        els.resumeText.textContent = `${getBookName(session.bookId)} · ${session.modeName} · ${session.index + 1}/${session.order.length}`;
+      } else {
+        els.resumeCard.classList.remove("show");
+      }
+    }
+
+    function openSetup(bookId) {
+      setupBookId = bookId;
+      const book = bookId === "all" ? null : bookMap.get(bookId);
+      els.setupTitle.textContent = book ? book.title : "전체 교재 통합 학습";
+      els.setupLead.textContent = book
+        ? `${book.questionCount}문제 · ${book.explanationLevel}`
+        : `${questions.length}문제 · 교재별 진도와 오답 기록은 유지됩니다.`;
+
+      const pool = questionsForBook(bookId);
+      const countMap = new Map();
+      pool.forEach(q => {
+        const key = q.bookId + "::" + q.category;
+        countMap.set(key, (countMap.get(key) || 0) + 1);
+      });
+      let options = `<option value="">전체 단원 · ${pool.length}문제</option>`;
+      [...countMap.entries()]
+        .sort((a,b) => a[0].localeCompare(b[0], "ko"))
+        .forEach(([key, count]) => {
+          const [bid, category] = key.split("::");
+          const label = bookId === "all" ? `${getBookName(bid)} · ${category}` : category;
+          options += `<option value="${escapeHtml(key)}">${escapeHtml(label)} · ${count}문제</option>`;
+        });
+      els.categorySelect.innerHTML = options;
+      els.categorySelect.value = "";
+
+      const difficultyCounts = new Map();
+      pool.forEach(q => difficultyCounts.set(q.difficulty, (difficultyCounts.get(q.difficulty) || 0) + 1));
+      const difficultyOrder = ["기본", "중급", "심화", "계산", "응용"];
+      const difficulties = [...difficultyCounts.entries()].sort((a, b) => {
+        const ai = difficultyOrder.indexOf(a[0]);
+        const bi = difficultyOrder.indexOf(b[0]);
+        if (ai === -1 && bi === -1) return a[0].localeCompare(b[0], "ko");
+        if (ai === -1) return 1;
+        if (bi === -1) return -1;
+        return ai - bi;
+      });
+      els.difficultySelect.innerHTML = `<option value="">전체 난이도 · ${pool.length}문제</option>` +
+        difficulties.map(([difficulty, count]) =>
+          `<option value="${escapeHtml(difficulty)}">${escapeHtml(difficulty)} · ${count}문제</option>`
+        ).join("");
+      els.difficultySelect.value = "";
+      els.resetBookBtn.textContent = book ? "이 교재 진도 초기화" : "전체 진도 초기화";
+      updateSelectedCount();
+      openOverlay(els.setupOverlay);
+    }
+
+    function selectedPool() {
+      const categoryKey = els.categorySelect.value;
+      const difficulty = els.difficultySelect.value;
+      return questionsForBook(setupBookId).filter(q => {
+        const categoryMatch = !categoryKey || categoryKey === q.bookId + "::" + q.category;
+        const difficultyMatch = !difficulty || q.difficulty === difficulty;
+        return categoryMatch && difficultyMatch;
+      });
+    }
+    function updateSelectedCount() {
+      if (!setupBookId) return;
+      const pool = selectedPool();
+      const wrongSet = new Set(progress.wrongIds || []);
+      const wrongCount = pool.filter(q => wrongSet.has(q.id)).length;
+      els.selectedCount.textContent = `현재 조건: ${pool.length}문제 · 저장된 오답 ${wrongCount}문제`;
+    }
+
+    function startMode(mode) {
+      if (!setupBookId) return;
+      let pool = selectedPool().map(q => q.id);
+      if (!pool.length) {
+        toast("현재 조건에 해당하는 문제가 없습니다.");
+        return;
+      }
+      const label = setupBookId === "all" ? "전체 통합" : getBookName(setupBookId);
+      let modeName = "";
+      if (mode === "sequence") modeName = label + " · 순서대로";
+      if (mode === "shuffle") {
+        pool = shuffle(pool);
+        modeName = label + " · 전체 랜덤";
+      }
+      if (mode === "random20") {
+        pool = shuffle(pool).slice(0, Math.min(20, pool.length));
+        modeName = label + " · 랜덤 20";
+      }
+      if (mode === "random50") {
+        pool = shuffle(pool).slice(0, Math.min(50, pool.length));
+        modeName = label + " · 랜덤 50";
+      }
+      if (mode === "wrong") {
+        const wrongSet = new Set(progress.wrongIds || []);
+        pool = shuffle(pool.filter(id => wrongSet.has(id)));
+        if (!pool.length) {
+          toast("현재 조건에 저장된 오답이 없습니다.");
+          return;
+        }
+        modeName = label + " · 오답 복습";
+      }
+      session = {
+        bookId: setupBookId,
+        order: pool,
+        originalOrder: [...pool],
+        index: 0,
+        answers: {},
+        modeName,
+        sessionWrong: [],
+        createdAt: Date.now()
+      };
+      saveSession();
+      closeOverlay(els.setupOverlay);
+      showQuiz();
+    }
+
+    function showQuiz() {
+      if (!session?.order?.length) {
+        renderHome();
+        return;
+      }
+      els.homeView.classList.add("hidden");
+      els.quizView.classList.add("show");
+      els.bottomNav.classList.add("show");
+      els.homeBtn.hidden = false;
+      els.appTitle.textContent = getBookName(session.bookId);
+      els.appSubtitle.textContent = session.modeName;
+      renderQuestion();
+    }
+
+    function currentQuestion() {
+      return questionMap.get(session.order[session.index]);
+    }
+
+    function renderQuestion() {
+      if (!session?.order?.length) return renderHome();
+      if (session.index < 0) session.index = 0;
+      if (session.index >= session.order.length) return showResults();
+      const q = currentQuestion();
+      if (!q) {
+        session.order.splice(session.index, 1);
+        saveSession();
+        return renderQuestion();
+      }
+      const answer = session.answers[q.id];
+      const book = bookMap.get(q.bookId);
+      els.bookChip.textContent = book?.shortTitle || q.bookId;
+      els.categoryChip.textContent = q.category;
+      els.unitChip.textContent = q.unit || q.category;
+      els.difficultyChip.textContent = q.difficulty;
+      els.pageChip.textContent = `p.${q.sourcePage}`;
+      els.counter.textContent = `${session.index + 1} / ${session.order.length}`;
+      els.questionText.textContent = q.question;
+      els.progressBar.style.width = `${(session.index + 1) / session.order.length * 100}%`;
+      els.options.innerHTML = "";
+
+      q.options.forEach((text, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option";
+        btn.innerHTML = `<span class="num">${idx + 1}</span><span>${escapeHtml(text)}</span>`;
+        btn.addEventListener("click", () => chooseOption(idx));
+        if (answer) {
+          if (idx === q.answer) btn.classList.add("correct");
+          else if (idx === answer.selected && !answer.correct) btn.classList.add("wrong");
+          else btn.classList.add("dim");
+          btn.disabled = true;
+        }
+        els.options.appendChild(btn);
+      });
+
+      if (answer) renderExplanation(q, answer);
+      else {
+        els.explanation.className = "explanation";
+        els.explanation.innerHTML = "";
+      }
+      els.prevBtn.disabled = session.index === 0;
+      els.nextBtn.textContent = session.index === session.order.length - 1 ? "결과" : "다음";
+      els.revealBtn.textContent = answer ? "해설 보기" : "정답 보기";
+      saveSession();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function recordAttempt(qid, correct) {
+      const item = itemFor(qid);
+      item.attempts += 1;
+      if (correct) item.correct += 1;
+      else item.wrong += 1;
+      item.lastAt = Date.now();
+      progress.items[qid] = item;
+      const wrong = new Set(progress.wrongIds || []);
+      if (correct) wrong.delete(qid);
+      else wrong.add(qid);
+      progress.wrongIds = [...wrong];
+      saveProgress();
+    }
+
+    function chooseOption(index) {
+      const q = currentQuestion();
+      if (!q || session.answers[q.id]) return;
+      const correct = index === q.answer;
+      session.answers[q.id] = { selected: index, correct, revealed: false };
+      if (!correct && !session.sessionWrong.includes(q.id)) session.sessionWrong.push(q.id);
+      recordAttempt(q.id, correct);
+      saveSession();
+      renderQuestion();
+      toast(correct ? "정답입니다!" : "오답입니다. 선택지별 해설을 확인하세요.");
+    }
+
+    function revealAnswer() {
+      const q = currentQuestion();
+      if (!q) return;
+      const existing = session.answers[q.id];
+      if (existing) {
+        els.explanation.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+      session.answers[q.id] = { selected: -1, correct: false, revealed: true };
+      if (!session.sessionWrong.includes(q.id)) session.sessionWrong.push(q.id);
+      recordAttempt(q.id, false);
+      saveSession();
+      renderQuestion();
+      toast("정답을 공개했습니다. 오답으로 저장됩니다.");
+    }
+
+    function renderExplanation(q, answer) {
+      const label = answer.revealed ? "정답 공개" : (answer.correct ? "정답" : "오답");
+      const cls = answer.correct ? "ok" : "no";
+      const optionExps = q.optionExplanations || q.options.map((_, i) =>
+        i === q.answer ? "정답입니다. " + q.explanation : "오답입니다. 정답 해설과 비교하세요."
+      );
+      const reviews = q.options.map((text, idx) => {
+        const classes = ["option-review"];
+        if (idx === q.answer) classes.push("correct");
+        if (idx === answer.selected && !answer.correct) classes.push("wrong-selected");
+        return `<div class="${classes.join(" ")}">
+          <strong>${idx + 1}. ${escapeHtml(text)} ${idx === q.answer ? "✓" : ""}</strong>
+          <span>${escapeHtml(optionExps[idx] || "")}</span>
+        </div>`;
+      }).join("");
+
+      els.explanation.innerHTML = `
+        <div class="result-label ${cls}">${label} · 정답 ${q.answer + 1}번</div>
+        <p><strong>${escapeHtml(q.options[q.answer])}</strong></p>
+        <p style="margin-top:8px">${escapeHtml(q.explanation)}</p>
+        <div class="key-box">
+          <span><strong>핵심 개념</strong> · ${escapeHtml(q.keyConcept || q.category)}</span>
+          <span>교재 p.${escapeHtml(q.sourcePage)}</span>
+        </div>
+        <h3>선택지별 해설</h3>
+        <div class="option-review-list">${reviews}</div>`;
+      els.explanation.className = "explanation show";
+    }
+
+    function go(delta) {
+      if (!session) return;
+      const next = session.index + delta;
+      if (next < 0) return;
+      if (next >= session.order.length) return showResults();
+      session.index = next;
+      saveSession();
+      renderQuestion();
+    }
+
+    function showResults() {
+      if (!session) return;
+      const rows = session.order.map(id => ({
+        q: questionMap.get(id),
+        a: session.answers[id]
+      })).filter(r => r.q);
+      const answered = rows.filter(r => r.a);
+      const correct = answered.filter(r => r.a.correct).length;
+      const wrong = answered.length - correct;
+      const skipped = rows.length - answered.length;
+      const rate = rows.length ? Math.round(correct / rows.length * 100) : 0;
+      els.resultMode.textContent = session.modeName;
+      els.resultCorrect.textContent = correct;
+      els.resultWrong.textContent = wrong;
+      els.resultSkipped.textContent = skipped;
+      els.scoreText.innerHTML = `${rate}%<small>정답률</small>`;
+      els.scoreRing.style.setProperty("--angle", `${rate * 3.6}deg`);
+
+      const grouped = {};
+      rows.forEach(({q, a}) => {
+        const key = `${getBookName(q.bookId)} · ${q.category}`;
+        grouped[key] ||= { total: 0, correct: 0 };
+        grouped[key].total += 1;
+        if (a?.correct) grouped[key].correct += 1;
+      });
+      els.resultCategories.innerHTML = Object.entries(grouped).map(([key, value]) =>
+        `<div class="category-row"><span>${escapeHtml(key)}</span><strong>${value.correct}/${value.total}</strong></div>`
+      ).join("");
+      els.reviewSessionWrongBtn.disabled = !session.sessionWrong?.length;
+      openOverlay(els.resultOverlay);
+    }
+
+    function reviewSessionWrong() {
+      const ids = [...new Set(session?.sessionWrong || [])].filter(id => questionMap.has(id));
+      if (!ids.length) return toast("이번 세트의 오답이 없습니다.");
+      session = {
+        bookId: session.bookId,
+        order: shuffle(ids),
+        originalOrder: [...ids],
+        index: 0,
+        answers: {},
+        modeName: "이번 세트 오답 복습",
+        sessionWrong: [],
+        createdAt: Date.now()
+      };
+      saveSession();
+      closeOverlay(els.resultOverlay);
+      showQuiz();
+    }
+
+    function restartSession() {
+      if (!session) return;
+      session.order = [...(session.originalOrder || session.order)];
+      session.index = 0;
+      session.answers = {};
+      session.sessionWrong = [];
+      saveSession();
+      closeOverlay(els.resultOverlay);
+      showQuiz();
+    }
+
+    function resetBook(bookId) {
+      const label = bookId === "all" ? "전체 학습 기록" : `${getBookName(bookId)}의 학습 기록`;
+      if (!confirm(`${label}과 오답 기록을 초기화할까요?`)) return;
+      const ids = new Set(questionsForBook(bookId).map(q => q.id));
+      ids.forEach(id => delete progress.items[id]);
+      progress.wrongIds = (progress.wrongIds || []).filter(id => !ids.has(id));
+      saveProgress();
+      if (session?.order?.some(id => ids.has(id))) {
+        session = null;
+        localStorage.removeItem(SESSION_KEY);
+      }
+      closeOverlay(els.setupOverlay);
+      renderHome();
+      toast("진도를 초기화했습니다.");
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      saveJSON(PREF_KEY, { theme });
+      $('meta[name="theme-color"]').setAttribute("content", theme === "dark" ? "#0e141d" : "#0b57d0");
+    }
+
+    function showHome() {
+      closeOverlay(els.resultOverlay);
+      renderHome();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function bindEvents() {
+      els.themeBtn.addEventListener("click", () => {
+        applyTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+      });
+      els.homeBtn.addEventListener("click", showHome);
+      els.resumeBtn.addEventListener("click", showQuiz);
+      els.prevBtn.addEventListener("click", () => go(-1));
+      els.nextBtn.addEventListener("click", () => go(1));
+      els.revealBtn.addEventListener("click", revealAnswer);
+      $("#closeSetupBtn").addEventListener("click", () => closeOverlay(els.setupOverlay));
+      $("#closeResultBtn").addEventListener("click", () => closeOverlay(els.resultOverlay));
+      $("#closeHelpBtn").addEventListener("click", () => closeOverlay(els.helpOverlay));
+      $("#resultHomeBtn").addEventListener("click", showHome);
+      $("#reviewSessionWrongBtn").addEventListener("click", reviewSessionWrong);
+      $("#restartSessionBtn").addEventListener("click", restartSession);
+      $("#resetAllBtn").addEventListener("click", () => resetBook("all"));
+      $("#installHelpBtn").addEventListener("click", () => openOverlay(els.helpOverlay));
+      els.resetBookBtn.addEventListener("click", () => resetBook(setupBookId));
+      els.categorySelect.addEventListener("change", updateSelectedCount);
+      els.difficultySelect.addEventListener("change", updateSelectedCount);
+      $$("[data-mode]").forEach(btn => btn.addEventListener("click", () => startMode(btn.dataset.mode)));
+      [els.setupOverlay, els.resultOverlay, els.helpOverlay].forEach(overlay =>
+        overlay.addEventListener("click", e => {
+          if (e.target === overlay) closeOverlay(overlay);
+        })
+      );
+
+      els.quizCard.addEventListener("touchstart", e => {
+        const t = e.changedTouches[0];
+        touchStart = { x: t.clientX, y: t.clientY };
+      }, { passive: true });
+      els.quizCard.addEventListener("touchend", e => {
+        if (!touchStart) return;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - touchStart.x;
+        const dy = t.clientY - touchStart.y;
+        touchStart = null;
+        if (Math.abs(dx) > 75 && Math.abs(dx) > Math.abs(dy) * 1.35) {
+          if (dx < 0) go(1); else go(-1);
+        }
+      }, { passive: true });
+      document.addEventListener("keydown", e => {
+        if (document.querySelector(".overlay.show")) return;
+        if (!els.quizView.classList.contains("show")) return;
+        if (e.key === "ArrowRight") go(1);
+        if (e.key === "ArrowLeft") go(-1);
+        if (["1","2","3","4"].includes(e.key)) chooseOption(Number(e.key) - 1);
+        if (e.key === "Enter") revealAnswer();
+      });
+    }
+
+    async function init() {
+      const prefs = loadJSON(PREF_KEY, {});
+      applyTheme(prefs.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
+      bindEvents();
+      try {
+        await loadData();
+        renderHome();
+      } catch (error) {
+        console.error(error);
+        els.loadingView.innerHTML = `
+          <div>
+            <strong>퀴즈 데이터를 불러오지 못했습니다.</strong>
+            <div style="margin:8px 0 14px">${escapeHtml(error.message)}</div>
+            <button class="btn primary" onclick="location.reload()">다시 불러오기</button>
+          </div>`;
+      }
+      if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js").catch(console.error);
+        });
+      }
+    }
+    init();
+  </script>
+</body>
+</html>

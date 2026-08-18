@@ -1,0 +1,26 @@
+{
+  "name": "AI·ML 퀴즈 라이브러리",
+  "short_name": "AI·ML QUIZ",
+  "description": "교재별 AI·머신러닝 면접·시험 대비 4지선다 퀴즈",
+  "lang": "ko-KR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f3f6fb",
+  "theme_color": "#0b57d0",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
