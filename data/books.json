@@ -6,6 +6,7 @@
     "shortTitle": "AI·ML 기초",
     "description": "AI·ML·DL, 지도·비지도학습, 평가 지표, 일반화, 검증과 군집화",
     "questionFile": "./data/book-01-questions.json",
+    "noteFile": "./AI_머신러닝_기초_면접_노션정리.md",
     "questionCount": 125,
     "sourcePages": 179,
     "explanationLevel": "정답 해설 중심"
@@ -17,8 +18,21 @@
     "shortTitle": "기계학습 방법론 1",
     "description": "선형·로지스틱회귀, 신경망 표현력, 경사하강법, SGD와 역전파",
     "questionFile": "./data/book-02-questions.json",
+    "noteFile": "./1-2_AI와_기계학습방법론1_면접_시험_학습자료.md",
     "questionCount": 180,
     "sourcePages": 225,
+    "explanationLevel": "정답·오답 선택지 상세 해설"
+  },
+  {
+    "id": "book-03",
+    "order": 3,
+    "title": "2-1 자연어 처리 기본",
+    "shortTitle": "자연어 처리 기본",
+    "description": "워드 임베딩, RNN·LSTM, 언어 모델, Seq2Seq·Attention, Transformer, BERT·T5·GPT, ICL·CoT",
+    "questionFile": "./data/book-03-questions.json",
+    "noteFile": "",
+    "questionCount": 180,
+    "sourcePages": 205,
     "explanationLevel": "정답·오답 선택지 상세 해설"
   }
 ]
