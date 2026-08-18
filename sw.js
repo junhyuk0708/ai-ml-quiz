@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "ai-ml-quiz-library-v3";
+const CACHE_NAME = "ai-ml-quiz-library-v7";
 const APP_ASSETS = [
   "./",
   "./index.html",
@@ -10,7 +10,11 @@ const APP_ASSETS = [
   "./data/books.json",
   "./data/book-01-questions.json",
   "./data/book-02-questions.json",
-  "./data/book-03-questions.json"
+  "./data/book-03-questions.json",
+  "./data/book-04-questions.json",
+  "./data/book-05-questions.json",
+  "./data/book-06-questions.json",
+  "./data/book-07-questions.json"
 ];
 
 self.addEventListener("install", event => {
