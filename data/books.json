@@ -34,5 +34,53 @@
     "questionCount": 180,
     "sourcePages": 205,
     "explanationLevel": "정답·오답 선택지 상세 해설"
+  },
+  {
+    "id": "book-04",
+    "order": 4,
+    "title": "2-2 자연어처리 및 텍스트 파운데이션 모델",
+    "shortTitle": "텍스트 파운데이션 모델",
+    "description": "파운데이션 모델, 지시·선호 학습과 RLHF, 디코딩, 프롬프트 엔지니어링, LLM 평가, 멀티모달·합성 데이터, 환각·탈옥",
+    "questionFile": "./data/book-04-questions.json",
+    "noteFile": "",
+    "questionCount": 180,
+    "sourcePages": 180,
+    "explanationLevel": "정답·오답 선택지 상세 해설"
+  },
+  {
+    "id": "book-05",
+    "order": 5,
+    "title": "3-1 딥러닝 및 이미지 모델",
+    "shortTitle": "딥러닝·이미지 모델",
+    "description": "CNN·합성곱·패딩·스트라이드·풀링·수용영역, AlexNet·VGGNet·ResNet·MobileNet",
+    "questionFile": "./data/book-05-questions.json",
+    "noteFile": "",
+    "questionCount": 180,
+    "sourcePages": 117,
+    "explanationLevel": "정답·오답 선택지 상세 해설"
+  },
+  {
+    "id": "book-06",
+    "order": 6,
+    "title": "3-1 딥러닝 및 이미지 모델-2",
+    "shortTitle": "딥러닝·이미지 모델 2",
+    "description": "CNN의 한계, RNN·LSTM, Attention·ViT·DeiT·Swin Transformer, 활성화·초기화·정규화·학습률·전이 학습",
+    "questionFile": "./data/book-06-questions.json",
+    "noteFile": "",
+    "questionCount": 180,
+    "sourcePages": 196,
+    "explanationLevel": "정답·오답 선택지 상세 해설"
+  },
+  {
+    "id": "book-07",
+    "order": 7,
+    "title": "3-2 이미지 파운데이션 모델",
+    "shortTitle": "이미지 파운데이션 모델",
+    "description": "CLIP·SigLIP·VLM·sVLM, SAM·Grounding·Diffusion·3D·Video FM, Fine-tuning·PEFT·합성 데이터·RAG·Agent·Serving",
+    "questionFile": "./data/book-07-questions.json",
+    "noteFile": "",
+    "questionCount": 180,
+    "sourcePages": 242,
+    "explanationLevel": "정답·오답 선택지 상세 해설"
   }
 ]
